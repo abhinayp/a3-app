@@ -1,0 +1,4 @@
+{
+  "default": "git@github.com:abhinayp/nextjs-chat-template.git",
+  "backend": "git@github.com:abhinayp/backend-template.git"
+}
