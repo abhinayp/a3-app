@@ -3,9 +3,9 @@
 
 ## Changes Made
 <!-- List the main changes you've made -->
-- [ ] Change 1
-- [ ] Change 2
-- [ ] Change 3
+- Change 1
+- Change 2
+- Change 3
 
 ## Related Issues
 <!-- Link to any related issues or tickets -->
