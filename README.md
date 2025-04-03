@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/a3-app.svg)](https://badge.fury.io/js/a3-app)
+
 # Web Application Setup Tool
 
 A command-line tool to quickly set up project
