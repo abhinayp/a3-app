@@ -3,8 +3,9 @@
 name: Node.js Package
 
 on:
-  release:
-    types: [released]
+  push:
+    tags:
+      - 'v*-beta*'
 
 jobs:
   build:
@@ -27,6 +28,7 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm publish
+      - run: npm run build
+      - run: npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
