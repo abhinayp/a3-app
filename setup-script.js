@@ -66,6 +66,7 @@ const customizeApp = async (appPath, projectName) => {
   updateFile(path.join(appPath, 'package.json'), projectNameKey, projectName);
   updateFile(path.join(appPath, 'docker-compose.yml'), projectNameKey, projectName);
   updateFile(path.join(appPath, 'Dockerfile'), projectNameKey, projectName);
+  updateFile(path.join(appPath, 'README.md'), projectNameKey, projectName);
 };
 
 const main = async () => {

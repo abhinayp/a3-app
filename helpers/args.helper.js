@@ -1,3 +1,6 @@
+const readline = require('readline');
+const yargs = require('yargs');
+
 const createInterface = () => {
   return readline.createInterface({
       input: process.stdin,
