@@ -40,7 +40,12 @@ const cloneBackend = async ({projectName, isEventBased, isWebsocketsRequired}) =
       }
 
       fs.rmSync(path.join(appPath, '.git'), { recursive: true, force: true });
-      execCommand('make install', { cwd: appPath });
+      try {
+        execCommand('make install', { cwd: appPath });
+      } catch (error) {
+        console.error('Error installing dependencies');
+        console.error(error);
+      }
     }
 
     return {
