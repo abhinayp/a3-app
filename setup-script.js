@@ -1,38 +1,10 @@
 #!/usr/bin/env node
-const yargs = require('yargs');
-const readline = require('readline');
 const { execSync } = require('child_process');
 const path = require('path');
 const appTemplates = require('./app-templates.json');
 const fs = require('fs');
 const { isDockerRunning } = require('./helpers/docker.helper');
-
-const getProjectName = async () => {
-    let projectName = yargs.argv.name;
-
-    if (!projectName) {
-        const rl = createInterface();
-        projectName = await askQuestion(rl, 'Enter project name: ');
-        rl.close();
-    }
-
-    return projectName;
-};
-
-const createInterface = () => {
-    return readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-};
-
-const askQuestion = (rl, question) => {
-    return new Promise((resolve) => {
-        rl.question(question, (answer) => {
-            resolve(answer);
-        });
-    });
-};
+const { getProjectName, isEventBased, isWebsocketsRequired } = require('./helpers/args.helper');
 
 const execCommand = (command, options = {}) => {
   try {
@@ -43,9 +15,19 @@ const execCommand = (command, options = {}) => {
   }
 };
 
-const cloneBackend = async (projectName) => {
+const cloneBackend = async ({projectName, isEventBased, isWebsocketsRequired}) => {
     const templateRepoUrl = appTemplates["backend"]
-    execCommand(`git clone --depth=1 ${templateRepoUrl} ${projectName}`);
+    let branch = "basic"
+
+    if (isEventBased && isWebsocketsRequired) {
+      branch = "event-websocket-support"
+    } else if (isEventBased) {
+      branch = "event-support"
+    } else if (isWebsocketsRequired) {
+      branch = "websockets-support"
+    }
+
+    execCommand(`git clone --depth=1 --branch ${branch} ${templateRepoUrl} ${projectName}`);
     const appPath = path.join(process.cwd(), projectName);
 
 
@@ -67,17 +49,10 @@ const cloneBackend = async (projectName) => {
     }
 };
 
-const setupProject = async (projectName, appType) => {
-    const { setup } = await cloneBackend(projectName, appType);
+const setupProject = async ({projectName, appType, isEventBased, isWebsocketsRequired}) => {
+    const { setup } = await cloneBackend({projectName, isEventBased, isWebsocketsRequired});
     await setup();
 }
-
-const getAppType = async () => {
-  const rl = createInterface();
-  const appType = await askQuestion(rl, 'Enter Application Type (backend, frontend): ');
-  rl.close();
-  return appType;
-};
 
 
 const updateFile = (filePath, searchValue, replaceValue) => {
@@ -95,8 +70,14 @@ const customizeApp = async (appPath, projectName) => {
 
 const main = async () => {
   const projectName = await getProjectName()
-  // const appType = await getAppType()
-  await setupProject(projectName, "backend")
+  const _isEventBased = await isEventBased()
+  const _isWebsocketsRequired = await isWebsocketsRequired()
+  await setupProject({
+    projectName,
+    appType: "backend",
+    isEventBased: _isEventBased,
+    isWebsocketsRequired: _isWebsocketsRequired
+  })
 };
 
 main().catch(console.error);
