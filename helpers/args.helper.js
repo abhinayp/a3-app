@@ -1,5 +1,8 @@
 const readline = require('readline');
 const yargs = require('yargs');
+const { Chalk } = require('chalk');
+
+const chalk = new Chalk();
 
 const createInterface = () => {
   return readline.createInterface({
@@ -22,8 +25,13 @@ const getProjectName = async () => {
 
   if (!projectName) {
       const rl = createInterface();
-      projectName = await askQuestion(rl, 'Enter project name: ');
+      projectName = await askQuestion(rl, chalk.blue('Enter project name: '));
       rl.close();
+  }
+
+  if (!projectName) {
+    console.log(chalk.red('Project name is required'));
+    projectName = await getProjectName();
   }
 
   return projectName;
@@ -35,7 +43,7 @@ const isEventBased = async () => {
 
   if (yargs.argv.eventBased === undefined) {
       const rl = createInterface();
-      const answer = await askQuestion(rl, 'Is this project event-based? (y/n) [default: n]: ');
+      const answer = await askQuestion(rl, chalk.blue('Is this project event-based? (y/n) [default: n]: '));
       rl.close();
       _isEventBased = answer === 'y';
   }
@@ -48,7 +56,7 @@ const isWebsocketsRequired = async () => {
 
   if (yargs.argv.websockets === undefined) {
     const rl = createInterface();
-    const answer = await askQuestion(rl, 'Is websockets required? (y/n) [default: n]: ');
+    const answer = await askQuestion(rl, chalk.blue('Is websockets required? (y/n) [default: n]: '));
     rl.close();
     _isWebsocketsRequired = answer === 'y';
   }
@@ -59,7 +67,7 @@ const isWebsocketsRequired = async () => {
 
 const getAppType = async () => {
   const rl = createInterface();
-  const appType = await askQuestion(rl, 'Enter Application Type (backend, frontend): ');
+  const appType = await askQuestion(rl, chalk.blue('Enter Application Type (backend, frontend): '));
   rl.close();
   return appType;
 };
