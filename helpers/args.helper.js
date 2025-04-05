@@ -35,7 +35,7 @@ const isEventBased = async () => {
 
   if (yargs.argv.eventBased === undefined) {
       const rl = createInterface();
-      const answer = await askQuestion(rl, 'Is this project event-based? (y/n): ');
+      const answer = await askQuestion(rl, 'Is this project event-based? (y/n) [default: n]: ');
       rl.close();
       _isEventBased = answer === 'y';
   }
@@ -48,7 +48,7 @@ const isWebsocketsRequired = async () => {
 
   if (yargs.argv.websockets === undefined) {
     const rl = createInterface();
-    const answer = await askQuestion(rl, 'Is websockets required? (y/n): ');
+    const answer = await askQuestion(rl, 'Is websockets required? (y/n) [default: n]: ');
     rl.close();
     _isWebsocketsRequired = answer === 'y';
   }
