@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-const { execSync } = require('child_process');
-const path = require('path');
-const appTemplates = require('./app-templates.json');
-const fs = require('fs');
-const { isDockerRunning } = require('./helpers/docker.helper');
-const { getProjectName, isEventBased, isWebsocketsRequired } = require('./helpers/args.helper');
+import { execSync } from 'child_process';
+import path from 'path';
+import appTemplates from './templates/app.templates.json';
+import fs from 'fs';
+import { isDockerRunning } from './helpers/docker.helper';
+import { getProjectName, isEventBased, isWebsocketsRequired } from './helpers/args.helper';
 
-const execCommand = (command, options = {}) => {
+const execCommand = (command: string, options = {}) => {
   try {
       execSync(command, { stdio: 'inherit', ...options });
   } catch (error) {
@@ -15,7 +15,7 @@ const execCommand = (command, options = {}) => {
   }
 };
 
-const cloneBackend = async ({projectName, isEventBased, isWebsocketsRequired}) => {
+const cloneBackend = async ({projectName, isEventBased, isWebsocketsRequired}: {projectName: string, isEventBased: boolean, isWebsocketsRequired: boolean}) => {
     const templateRepoUrl = appTemplates["backend"]
     let branch = "basic"
 
@@ -54,19 +54,19 @@ const cloneBackend = async ({projectName, isEventBased, isWebsocketsRequired}) =
     }
 };
 
-const setupProject = async ({projectName, appType, isEventBased, isWebsocketsRequired}) => {
+const setupProject = async ({projectName, appType, isEventBased, isWebsocketsRequired}: {projectName: string, appType: string, isEventBased: boolean, isWebsocketsRequired: boolean}) => {
     const { setup } = await cloneBackend({projectName, isEventBased, isWebsocketsRequired});
     await setup();
 }
 
 
-const updateFile = (filePath, searchValue, replaceValue) => {
+const updateFile = (filePath: string, searchValue: string, replaceValue: string) => {
   const content = fs.readFileSync(filePath, 'utf8');
   const updatedContent = content.replace(new RegExp(searchValue, 'g'), replaceValue);
   fs.writeFileSync(filePath, updatedContent, 'utf8');
 };
 
-const customizeApp = async (appPath, projectName) => {
+const customizeApp = async (appPath: string, projectName: string) => {
   const projectNameKey = 'PROJECTNAME'
   updateFile(path.join(appPath, 'package.json'), projectNameKey, projectName);
   updateFile(path.join(appPath, 'docker-compose.yml'), projectNameKey, projectName);

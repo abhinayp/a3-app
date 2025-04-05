@@ -1,8 +1,14 @@
-const readline = require('readline');
-const yargs = require('yargs');
-const { Chalk } = require('chalk');
+import readline from 'readline';
+import yargs from 'yargs';
+import { Chalk } from 'chalk';
 
 const chalk = new Chalk();
+
+const argv = yargs(process.argv.slice(2))
+  .option('name', { type: 'string', demandOption: false })
+  .option('eventBased', { type: 'boolean', demandOption: false })
+  .option('websockets', { type: 'boolean', demandOption: false })
+  .parseSync() as { name?: string; eventBased?: boolean; websockets?: boolean };
 
 const createInterface = () => {
   return readline.createInterface({
@@ -12,16 +18,16 @@ const createInterface = () => {
 };
 
 
-const askQuestion = (rl, question) => {
+const askQuestion = (rl: readline.Interface, question: string): Promise<string> => {
   return new Promise((resolve) => {
-      rl.question(question, (answer) => {
+      rl.question(question, (answer: string) => {
           resolve(answer);
       });
   });
 };
 
-const getProjectName = async () => {
-  let projectName = yargs.argv.name;
+const getProjectName = async (): Promise<string> => {
+  let projectName = argv.name as string | undefined;
 
   if (!projectName) {
       const rl = createInterface();
@@ -39,9 +45,9 @@ const getProjectName = async () => {
 
 
 const isEventBased = async () => {
-  let _isEventBased = !!yargs.argv.eventBased;
+  let _isEventBased = !!argv.eventBased;
 
-  if (yargs.argv.eventBased === undefined) {
+  if (argv.eventBased === undefined) {
       const rl = createInterface();
       const answer = await askQuestion(rl, chalk.blue('Is this project event-based? (y/n) [default: n]: '));
       rl.close();
@@ -52,9 +58,9 @@ const isEventBased = async () => {
 };
 
 const isWebsocketsRequired = async () => {
-  let _isWebsocketsRequired = !!yargs.argv.websockets;
+  let _isWebsocketsRequired = !!argv.websockets;
 
-  if (yargs.argv.websockets === undefined) {
+  if (argv.websockets === undefined) {
     const rl = createInterface();
     const answer = await askQuestion(rl, chalk.blue('Is websockets required? (y/n) [default: n]: '));
     rl.close();
@@ -72,7 +78,7 @@ const getAppType = async () => {
   return appType;
 };
 
-module.exports = {
+export {
   getProjectName,
   isEventBased,
   isWebsocketsRequired,
