@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
 
 const isDockerInstalled = () => {
   try {
@@ -27,7 +27,7 @@ const isDockerRunning = () => {
   }
 }
 
-module.exports = {
+export {
   isDockerInstalled,
   isDockerComposeInstalled,
   isDockerRunning
